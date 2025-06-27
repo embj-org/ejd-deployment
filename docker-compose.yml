@@ -1,0 +1,22 @@
+services:
+  backend:
+    image: ghcr.io/embj-org/ejd:latest
+    container_name: ejd
+    restart: always
+    depends_on:
+      - postgresql
+    env_file: ./ejd/ejd.env
+    ports:
+      - 3000:3000
+  postgresql:
+    image: docker.io/bitnami/postgresql:latest
+    restart: always
+    container_name: db
+    env_file: ./postgresql/postgresql.env
+    ports:
+      - 127.0.0.1:5432:5432
+    volumes:
+      - postgresql_data:/bitnami/postgresql
+
+volumes:
+  postgresql_data:
