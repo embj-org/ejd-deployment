@@ -35,7 +35,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik/traefik.yml:/traefik.yml:ro
       - ./traefik/configs:/configs:ro
-      - ./traefik/acme.json:/acme.json:rw
+      - ./traefik/acme:/acme:rw
       - ./traefik/logs:/logs:rw
     labels:
       - traefik.enable=true
