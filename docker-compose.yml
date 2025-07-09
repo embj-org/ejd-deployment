@@ -1,5 +1,5 @@
 services:
-  backend:
+  ejd:
     image: ghcr.io/embj-org/ejd:latest
     container_name: ejd
     restart: always
