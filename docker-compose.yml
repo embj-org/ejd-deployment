@@ -6,6 +6,8 @@ services:
     depends_on:
       - postgresql
     env_file: ./ejd/ejd.env
+    volumes:
+      - ./ejd/tmp:/tmp
     ports:
       - 3000:3000
   postgresql:

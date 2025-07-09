@@ -15,6 +15,8 @@ services:
     depends_on:
       - postgresql
     env_file: ../ejd/ejd.env
+    volumes:
+      - ./ejd/tmp:/tmp
     labels:
       - traefik.enable=true
       - traefik.http.routers.ejd-https.rule=Host(`ejd.url.here`)
