@@ -1,0 +1,54 @@
+services:
+  postgresql:
+    image: docker.io/bitnami/postgresql:latest
+    restart: always
+    container_name: db
+    env_file: ../postgresql/postgresql.env
+    ports:
+      - 127.0.0.1:5432:5432
+    volumes:
+      - postgresql_data:/bitnami/postgresql
+  ejd:
+    image: ghcr.io/embj-org/ejd:latest
+    container_name: ejd
+    restart: always
+    depends_on:
+      - postgresql
+    env_file: ../ejd/ejd.env
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.ejd-https.rule=Host(`ejd.url.here`)
+      - traefik.http.routers.ejd-https.entrypoints=https
+      - traefik.http.routers.ejd-https.tls=true
+      - traefik.http.routers.ejd-https.service=ejd
+      - traefik.http.services.ejd.loadbalancer.ejd.port=80
+  traefik:
+    image: docker.io/traefik:latest
+    container_name: traefik
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    env_file: ./traefik.env
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - data/traefik/traefik.yml:/traefik.yml:ro
+      - data/traefik/configs:/configs:ro
+      - data/traefik/acme.json:/acme.json:rw
+      - data/traefik/logs:/logs:rw
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.traefik-https.entrypoints=https
+      - traefik.http.routers.traefik-https.rule=Host(`admin.url.here`)
+      - traefik.http.middlewares.traefik-auth.basicauth.users=${TRAEFIK_ADMIN}
+      - traefik.http.routers.traefik-https.middlewares=traefik-auth
+      - traefik.http.routers.traefik-https.service=api@internal
+      - traefik.http.routers.traefik-https.tls=true
+      - traefik.http.routers.traefik-https.tls.certresolver=dns
+      - traefik.http.routers.traefik-https.tls.domains[0].main=url.here
+      - traefik.http.routers.traefik-https.tls.domains[0].sans=*.url.here
+
+
+volumes:
+  postgresql_data:
