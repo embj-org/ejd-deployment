@@ -23,7 +23,7 @@ services:
       - traefik.http.routers.ejd-https.entrypoints=https
       - traefik.http.routers.ejd-https.tls=true
       - traefik.http.routers.ejd-https.service=ejd
-      - traefik.http.services.ejd.loadbalancer.server.port=80
+      - traefik.http.services.ejd.loadbalancer.server.port=3000
   traefik:
     image: docker.io/traefik:latest
     container_name: traefik
